@@ -68,7 +68,6 @@ client.connect(err => {
 
     app.post('/addReview', (req, res) => {
         const newReview = req.body;
-        console.log(newReview)
         reviewCollection.insertOne(newReview)
             .then(result => {
                 res.send(result.insertedCount > 0)
@@ -127,7 +126,6 @@ client.connect(err => {
                 .then(function (decodedToken) {
                     const tokenEmail = decodedToken.email;
                     const queryEmail = req.query.email;
-                    console.log(tokenEmail, queryEmail);
                     if (tokenEmail == queryEmail) {
                         orderCollection.find({ email: queryEmail })
                             .toArray((err, documents) => {
@@ -148,41 +146,7 @@ client.connect(err => {
                 res.send(documents)
             })
     })
-    // app.get('/orders', (req, res) => {
-    //     const bearer = req.headers.authorization;
-    //     if (bearer && bearer.startsWith('Bearer ')) {
-    //         const idToken = bearer.split(' ')[1];
-    //         admin.auth().verifyIdToken(idToken)
-    //             .then(function (decodedToken) {
-    //                 const tokenEmail = decodedToken.email;
-    //                 const queryEmail = req.query.email;
-    //                 //   console.log(tokenEmail, queryEmail);
-    //                 if (tokenEmail == queryEmail) {
-    //                     adminCollection.find({ email: queryEmail })
-    //                         .toArray((err, admins) => {
-    //                             if (admins.length === 0) {
-    //                                 orderCollection.find({ email: queryEmail })
-    //                                     .toArray((err, someDocuments) => {
-    //                                         res.status(200).send(someDocuments);
-    //                                     })
-    //                             }
-    //                             orderCollection.find({})
-    //                                 .toArray((err, allDocuments) => {
-    //                                     res.send(allDocuments);
-    //                                 })
-    //                         })
-
-
-
-    //                 }
-    //             }).catch(function (error) {
-    //                 res.status(401).send('Un authorized access')
-    //             });
-    //     }
-    //     else {
-    //         res.status(401).send('Un authorized access')
-    //     }
-    // })
+    
     app.post('/isAdmin', (req, res) => {
         const email = req.body.email;
         adminCollection.find({ email: email })
@@ -191,7 +155,6 @@ client.connect(err => {
             })
     })
     app.patch("/update/:id", (req, res) => {
-        console.log(req.body.status);
         orderCollection.updateOne(
             { _id: ObjectId(req.params.id) },
             {
@@ -204,4 +167,4 @@ client.connect(err => {
 
 });
 
-app.listen(port)
+app.listen(process.env.PORT || port)
